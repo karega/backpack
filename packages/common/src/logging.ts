@@ -46,7 +46,7 @@ function log(str: any, ...args: any) {
 }
 
 function _log(str: any, ...args: any) {
-  console.log(str, ...args);
+  console.trace(str, ...args);
 }
 
 async function _serviceWorkerLog(...args: any[]) {

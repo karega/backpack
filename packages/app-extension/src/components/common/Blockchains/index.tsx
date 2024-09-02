@@ -5,6 +5,7 @@ import {
 } from "@coral-xyz/common";
 import {
   DEFAULT_SOLANA_CLUSTER,
+  DEFAULT_X1_CLUSTER,
   EthereumConnectionUrl,
 } from "@coral-xyz/secure-background/legacyCommon";
 import type { EthereumContext } from "@coral-xyz/secure-clients/legacyCommon";
@@ -73,6 +74,42 @@ export const BLOCKCHAIN_COMPONENTS: Record<
       // TODO use Backpack configured value
       const solanaMainnetRpc =
         process.env.DEFAULT_SOLANA_CONNECTION_URL || DEFAULT_SOLANA_CLUSTER;
+      const solanaConnection = new SolanaConnection(
+        solanaMainnetRpc,
+        "confirmed"
+      );
+      const accounts = (
+        await anchor.utils.rpc.getMultipleAccounts(
+          solanaConnection,
+          publicKeys.map((p) => new PublicKey(p))
+        )
+      ).map((result, index) => {
+        return {
+          publicKey: publicKeys[index],
+          balance: result
+            ? BigNumber.from(result.account.lamports)
+            : BigNumber.from(0),
+          index,
+        };
+      });
+      return accounts;
+    },
+
+    MaxFeeOffset: (token: { address: string; mint?: string }) => {
+      if (token.mint === SOL_NATIVE_MINT) {
+        // When sending SOL, account for the tx fee and rent exempt minimum.
+        return BigNumber.from(5000).add(
+          BigNumber.from(NATIVE_ACCOUNT_RENT_EXEMPTION_LAMPORTS)
+        );
+      }
+      return BigNumber.from(0);
+    },
+  },
+  [Blockchain.X1]: {
+    LoadBalances: async (publicKeys: string[]) => {
+      // TODO use Backpack configured value
+      const solanaMainnetRpc =
+        process.env.DEFAULT_X1_CONNECTION_URL || DEFAULT_X1_CLUSTER;
       const solanaConnection = new SolanaConnection(
         solanaMainnetRpc,
         "confirmed"

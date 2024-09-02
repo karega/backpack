@@ -424,7 +424,7 @@ function useSwapValidInputTokensSolanaFn(
         tokens: balances.map((b) => b.token),
       },
     });
-    const mints = (data?.jupiterSwapValidInputTokens ?? []) as string[];
+    const mints = (data?.jupiterTradableTokens ?? []) as unknown as string[];
 
     return balances.filter(
       (b) => mints.includes(b.token) || b.token === SOL_NATIVE_MINT
@@ -445,9 +445,9 @@ export function useSwapValidInputTokensSolana(
   });
 
   const values = useMemo(() => {
-    const mints = (
-      loading ? [] : data?.jupiterSwapValidInputTokens ?? []
-    ) as string[];
+    const mints = (loading
+      ? []
+      : data?.jupiterTradableTokens ?? []) as unknown as string[];
 
     return balances.filter(
       (b) => mints.includes(b.token) || b.token === SOL_NATIVE_MINT
@@ -473,7 +473,7 @@ function useSwapOutputTokensSolanaFn(
     });
 
     const nodes = (() =>
-      data?.jupiterSwapOutputTokens?.map((t) => {
+      data?.jupiterTradableTokens?.map((t) => {
         const b = outputBalances.find(
           (b) =>
             b.token === (t.address === WSOL_MINT ? SOL_NATIVE_MINT : t.address)
@@ -516,7 +516,7 @@ export function useSwapOutputTokensSolana(
     () =>
       loading
         ? []
-        : data?.jupiterSwapOutputTokens?.map((t) => {
+        : data?.jupiterTradableTokens?.map((t) => {
             const b = outputBalances.find(
               (b) =>
                 b.token ===

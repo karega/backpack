@@ -1,4 +1,3 @@
-import { useSpotlightSearchedNfts } from "@coral-xyz/data-components";
 import { useTheme } from "@coral-xyz/tamagui";
 import { Divider } from "@mui/material";
 
@@ -21,7 +20,7 @@ export const SearchBody = ({
   const theme = useTheme();
   const tokens = [] as any; // Note: looks like tokens aren't implemented or were removed.
   //       this will have to be updated to use react navigation if brought back.
-  const nfts = useSpotlightSearchedNfts(searchFilter);
+  const nfts = useSearchedXnfts(searchFilter);
   const xnfts = useSearchedXnfts(searchFilter);
   const allResultsLength = nfts.length + xnfts.length + tokens.length;
   const currentCounter = getCurrentCounter(arrowIndex, allResultsLength);

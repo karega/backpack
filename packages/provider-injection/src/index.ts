@@ -1,6 +1,6 @@
 Object.defineProperty(globalThis, "_backpack_injected_provider", {
   value: true,
-  writable: false
+  writable: false,
 });
 
 import {
@@ -38,6 +38,7 @@ import {
   ProviderEthereumInjection,
   ProviderRootXnftInjection,
   ProviderSolanaInjection,
+  ProviderX1Injection,
 } from "@coral-xyz/provider-core";
 import { initialize } from "@coral-xyz/wallet-standard";
 import { v4 as uuidV4 } from "uuid";
@@ -66,9 +67,47 @@ function main() {
       address: window.location.origin,
     },
   });
+
+  initX1(secureClientSender);
   initSolana(secureClientSender);
   initEthereum(secureClientSender);
   logger.debug("provider ready");
+}
+
+function initX1(secureClientSender: TransportSender) {
+  const x1 = new ProviderX1Injection(secureClientSender);
+
+  try {
+    Object.defineProperty(window, "backpack", { value: x1 });
+  } catch (e) {
+    console.warn(
+      "Backpack couldn't override `window.backpack`. Disable other X1 wallets to use Backpack."
+    );
+  }
+
+  try {
+    Object.defineProperty(window, "xnft", {
+      value: (() => {
+        //
+        // XNFT Providers
+        //
+        const requestManager = new ChainedRequestManager(
+          CHANNEL_PLUGIN_RPC_REQUEST,
+          CHANNEL_PLUGIN_RPC_RESPONSE
+        );
+        const xnft = new ProviderRootXnftInjection(requestManager, {
+          x1,
+        });
+        return xnft;
+      })(),
+    });
+  } catch (e) {
+    console.warn(
+      "Backpack couldn't override `window.xnft`. Disable other xNFT wallets to use Backpack."
+    );
+  }
+
+  initialize(x1);
 }
 
 function initSolana(secureClientSender: TransportSender) {
@@ -124,11 +163,11 @@ function initEthereum(secureClientSender: TransportSender) {
           ...new Set([
             ...(window.ethereum
               ? // Coinbase wallet uses a providers array on window.ethereum, so
-              // include those if already registered
-              Array.isArray(window.ethereum.providers)
+                // include those if already registered
+                Array.isArray(window.ethereum.providers)
                 ? [...window.ethereum.providers, window.ethereum]
                 : // Else just window.ethereum if it is registered
-                [window.ethereum]
+                  [window.ethereum]
               : []),
             backpackEthereum,
           ]),
@@ -186,13 +225,9 @@ function initEthereum(secureClientSender: TransportSender) {
               if (
                 window.location.href.endsWith(".app.uniswap.org") ||
                 window.location.href === "app.uniswap.org" ||
-                (
-                  (
-                    window.location.href === "kwenta.io" ||
-                    window.location.href.endsWith(".kwenta.io")
-                  )
-                  && prop === "providers"
-                )
+                ((window.location.href === "kwenta.io" ||
+                  window.location.href.endsWith(".kwenta.io")) &&
+                  prop === "providers")
               ) {
                 return null;
               }

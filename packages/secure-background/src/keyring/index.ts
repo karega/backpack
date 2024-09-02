@@ -17,6 +17,7 @@ import { BlockchainKeyring } from "./BlockchainKeyring";
 
 export function hdFactoryForBlockchain(blockchain: Blockchain) {
   return {
+    [Blockchain.X1]: new SolanaHdKeyringFactory(),
     [Blockchain.SOLANA]: new SolanaHdKeyringFactory(),
     [Blockchain.ECLIPSE]: new SolanaHdKeyringFactory(),
     [Blockchain.ETHEREUM]: new EthereumHdKeyringFactory(),
@@ -28,6 +29,13 @@ export function keyringForBlockchain(
   store: SecureStore
 ): BlockchainKeyring {
   return {
+    [Blockchain.X1]: new BlockchainKeyring(
+      Blockchain.X1,
+      store,
+      new SolanaHdKeyringFactory(),
+      new SolanaKeyringFactory(),
+      new SolanaLedgerKeyringFactory()
+    ),
     [Blockchain.SOLANA]: new BlockchainKeyring(
       Blockchain.SOLANA,
       store,

@@ -35,7 +35,15 @@ const TokenMintForAssetIdFragment = gql(`
 
 export const GET_SWAP_VALID_INPUT_TOKENS = gql(`
     query GetSwapValidInputTokens($tokens: [String!]!) {
-      jupiterSwapValidInputTokens(tokens: $tokens)
+      jupiterTradableTokens(mints: $tokens) {
+        address
+        coingeckoId
+        decimals
+        id
+        logo
+        name
+        symbol
+      }
     }
 `);
 
@@ -72,7 +80,7 @@ const GET_TOKEN_BALANCES = gql(`
 
 export const GET_SWAP_OUTPUT_TOKENS = gql(`
   query GetSwapOutputTokens($inputToken: String!) {
-    jupiterSwapOutputTokens(inputToken: $inputToken) {
+    jupiterTradableTokens(search: $inputToken) {
       id
       address
       decimals

@@ -13,6 +13,7 @@ import {
 } from "@coral-xyz/recoil";
 import {
   DEFAULT_SOLANA_CLUSTER,
+  DEFAULT_X1_CLUSTER,
   explorerAddressUrl,
 } from "@coral-xyz/secure-background/legacyCommon";
 import {

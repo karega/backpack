@@ -47,6 +47,7 @@ export enum Blockchain {
   // SVM.
   SOLANA = "solana",
   ECLIPSE = "eclipse",
+  X1 = "x1",
 
   // EVM.
   ETHEREUM = "ethereum",

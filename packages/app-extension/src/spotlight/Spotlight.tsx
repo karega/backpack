@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSpotlightSearchedNfts } from "@coral-xyz/data-components";
 import {
   showSpotlight,
   useActiveWallet,
@@ -99,7 +98,7 @@ function SpotlightInner({
   setOpen: any;
 }) {
   const [searchFilter, setSearchFilter] = useState("");
-  const nfts = useSpotlightSearchedNfts(searchFilter);
+  const nfts = useSearchedXnfts(searchFilter);
   const xnfts = useSearchedXnfts(searchFilter);
   const allResultsLength = nfts.length + xnfts.length;
   //  const { push } = useNavigation();

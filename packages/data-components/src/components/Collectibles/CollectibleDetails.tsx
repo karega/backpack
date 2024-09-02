@@ -16,6 +16,7 @@ import {
 import {
   explorerAddressUrl,
   DEFAULT_SOLANA_CLUSTER,
+  DEFAULT_X1_CLUSTER,
 } from "@coral-xyz/secure-background/legacyCommon";
 import {
   Button,

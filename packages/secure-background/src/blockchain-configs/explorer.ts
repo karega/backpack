@@ -1,6 +1,8 @@
 import { EthereumExplorer } from "./ethereum/explorer";
 import { SolanaCluster } from "./solana/cluster";
 import { SolanaExplorer } from "./solana/explorer";
+import { X1Cluster } from "./x1/cluster";
+import { X1Explorer } from "./x1/explorer";
 
 export function explorerUrl(
   base: string,
@@ -10,6 +12,11 @@ export function explorerUrl(
   switch (base) {
     case EthereumExplorer.ETHERSCAN:
       return join(EthereumExplorer.ETHERSCAN, `tx/${tx}`);
+    case X1Explorer.X1_EXPLORER:
+      return join(
+        X1Explorer.X1_EXPLORER,
+        `tx/${tx}${clusterSuffix(base, connectionUrl)}`
+      );
     case SolanaExplorer.SOLANA_EXPLORER:
       return join(
         SolanaExplorer.SOLANA_EXPLORER,
@@ -48,6 +55,11 @@ export function explorerAddressUrl(
   switch (base) {
     case EthereumExplorer.ETHERSCAN:
       return join(EthereumExplorer.ETHERSCAN, `address/${address}`);
+    case X1Explorer.X1_EXPLORER:
+      return join(
+        X1Explorer.X1_EXPLORER,
+        `address/${address}${clusterSuffix(base, connectionUrl)}`
+      );
     case SolanaExplorer.SOLANA_EXPLORER:
       return join(
         SolanaExplorer.SOLANA_EXPLORER,
@@ -135,6 +147,17 @@ function clusterSuffix(base: string, connectionUrl: string): string {
         case SolanaCluster.MAINNET:
           return "?cluster=mainnet";
         case SolanaCluster.DEVNET:
+          return "?cluster=devnet";
+        default:
+          return `?cluster=custom&customUrl=${encodeURIComponent(
+            connectionUrl
+          )}`;
+      }
+    case X1Explorer.X1_EXPLORER:
+      switch (connectionUrl) {
+        case X1Cluster.MAINNET:
+          return "?cluster=mainnet";
+        case X1Cluster.DEVNET:
           return "?cluster=devnet";
         default:
           return `?cluster=custom&customUrl=${encodeURIComponent(
